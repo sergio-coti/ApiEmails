@@ -28,6 +28,9 @@ jobs:
       - name: Publish with dotnet
         run: dotnet publish --configuration Release --output ./published-app
 
+      - name: Verify published files
+        run: dir ./published-app
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -48,7 +51,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
+      - name: Verify downloaded files
+        run: dir . # Verificar os arquivos baixados na raiz do diretório
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -62,4 +68,4 @@ jobs:
         with:
           app-name: 'apiemails'
           slot-name: 'Production'
-          package: ./published-app
+          package: ./.net-app
