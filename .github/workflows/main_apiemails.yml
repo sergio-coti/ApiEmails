@@ -26,11 +26,9 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Publish with dotnet
-        # Definir o caminho de saída como ./published-app no diretório atual
         run: dotnet publish --configuration Release --output ${{github.workspace}}/published-app
 
       - name: Verify published files
-        # Listar arquivos do diretório de publicação para garantir que estão corretos
         run: |
           echo "Verificando conteúdo do diretório de publicação:"
           dir ${{github.workspace}}/published-app
@@ -57,17 +55,15 @@ jobs:
           name: published-app-artifact
 
       - name: Verify downloaded files
-        # Listar os arquivos no diretório onde o artefato foi baixado
         run: |
           echo "Verificando conteúdo do diretório de trabalho atual após download:"
           dir .
 
       - name: Move downloaded files
-        # Mover os arquivos baixados para o diretório publicado, caso necessário
         run: |
           echo "Movendo arquivos baixados para o diretório de publicação:"
-          mkdir -p ${{github.workspace}}/published-app
-          mv * ${{github.workspace}}/published-app
+          mkdir -p ${{github.workspace}}/temp-published-app
+          mv * ${{github.workspace}}/temp-published-app
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -82,4 +78,4 @@ jobs:
         with:
           app-name: 'apiemails'
           slot-name: 'Production'
-          package: ${{github.workspace}}/published-app  # Usar o caminho completo para o package
+          package: ${{github.workspace}}/temp-published-app  # Usar o caminho do novo diretório
