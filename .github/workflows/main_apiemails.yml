@@ -26,6 +26,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Publish with dotnet
+        # Definindo o diretório de saída como ./published-app
         run: dotnet publish --configuration Release --output ./published-app
 
       - name: Verify published files
@@ -34,8 +35,8 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ./published-app
+          name: published-app-artifact
+          path: ./published-app  # Certifique-se de que este caminho está correto
 
   deploy:
     runs-on: windows-latest
@@ -50,10 +51,10 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
+          name: published-app-artifact  # Nome deve ser o mesmo do upload
 
       - name: Verify downloaded files
-        run: dir . # Verificar os arquivos baixados na raiz do diretório
+        run: dir ./published-app  # Verificar se os arquivos foram baixados corretamente
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -68,4 +69,4 @@ jobs:
         with:
           app-name: 'apiemails'
           slot-name: 'Production'
-          package: ./.net-app
+          package: ./published-app  # Certifique-se de que o caminho está correto e consistente
