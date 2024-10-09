@@ -57,9 +57,17 @@ jobs:
           name: published-app-artifact
 
       - name: Verify downloaded files
+        # Listar os arquivos no diretório onde o artefato foi baixado
         run: |
-          echo "Verificando conteúdo do diretório baixado:"
-          dir ${{github.workspace}}/published-app
+          echo "Verificando conteúdo do diretório de trabalho atual após download:"
+          dir .
+
+      - name: Move downloaded files
+        # Mover os arquivos baixados para o diretório publicado, caso necessário
+        run: |
+          echo "Movendo arquivos baixados para o diretório de publicação:"
+          mkdir -p ${{github.workspace}}/published-app
+          mv * ${{github.workspace}}/published-app
 
       - name: Login to Azure
         uses: azure/login@v2
